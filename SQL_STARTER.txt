@@ -1,0 +1,217 @@
+
+CREATE DATABASE oneneuron;
+USE oneneuron;
+
+CREATE TABLE employee (id INT PRIMARY KEY AUTO_INCREMENT, first_name VARCHAR(20) NOT NULL , last_name VARCHAR(20) NOT NULL , salary INT);
+
+INSERT INTO employee VALUES(1,"D","G",200000);
+
+SELECT * FROM employee;
+INSERT INTO employee VALUES(2,"Dev","G",200000);
+
+SELECT * FROM employee where first_name="dev";
+#note here we are searching for "dev" but it is returning "Dev" capital D so to get out of this use below WEEKDAY
+SELECT * FROM employee where binary first_name="dev";
+#it will give you EMPTY
+INSERT INTO employee VALUES(3,"dev","G",10000);
+
+SELECT * FROM employee where binary first_name="dev";
+
+SELECT first_name as name, salary as income FROM employee where binary first_name="dev";
+#it will display table while renaming it to first_name as name and salary as income
+
+
+####update clause
+
+UPDATE employee SET salary=40000 where first_name="dev";
+
+
+Select * from employee;
+
+
+##delete clause
+
+Delete from employee where first_name="D";
+
+
+Select * from employee;
+
+##ALTER COMMAND
+alter table employee add column location VARCHAR(20);
+
+desc employee;
+
+alter table employee modify column first_name VARCHAR(40) NOT NULL;
+
+update employee set location="meerut";
+desc employee;
+select * from employee;
+
+alter table employee modify column location VARCHAR(20) NOT NULL;
+desc employee;
+
+
+FOREIGN KEY
+
+
+CREATE DATABASE oneneuron;
+USE oneneuron;
+DROP TABLE courses;
+create table courses( course_id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(30) NOT NULL UNIQUE KEY,course_fee INT NOT NULL );
+INSERT INTO courses(name,course_fee) VALUES("DS",20000),("WEB",17700);
+
+SELECT * from courses;
+drop table students;
+CREATE TABLE students (id INT PRIMARY KEY AUTO_INCREMENT, first_name VARCHAR(20) NOT NULL , last_name VARCHAR(20) NOT NULL , 
+                       email VARCHAR(30) NOT NULL, phone INT NOT NULL, alternate_phone INT ,
+                       enrollment_date TIMESTAMP NOT NULL DEFAULT "2022-07-01 00:00:00" ,
+                       selected_course INT NOT NULL DEFAULT 1, 
+                       unique key(email,phone),
+                       foreign key(selected_course) REFERENCES courses(course_id));
+
+
+
+# in this courses table is parent table as if it does not have a value then students table cannot be created as it is having foreign CONSTRAINT
+#with it 
+
+INSERT INTO students(first_name,last_name,email,phone,selected_course) VALUES("devansh","gupta","d@12.com","9876",1);
+
+select * from students;
+
+#foreign key meansif we give a course_id that is not present in courses table that will give an error.
+#see below example -->
+
+INSERT INTO students(first_name,last_name,email,phone,selected_course) VALUES("devansh","gupta","d@112.com","98976",3);
+
+ERROR Cannot add or update a child row: a foreign key constraint fails (`oneneuron`.`students`, CONSTRAINT `students_ibfk_1` FOREIGN KEY (`selected_course`) REFERENCES `courses` (`course_id`))
+
+
+========================================================================================================================================================================================================================================================================================================================
+
+GROUP BY, ORDER
+
+
+CREATE TABLE students (id INT PRIMARY KEY AUTO_INCREMENT, first_name VARCHAR(20) NOT NULL , last_name VARCHAR(20) NOT NULL , 
+                       email VARCHAR(30) NOT NULL, phone INT NOT NULL, alternate_phone INT ,
+                       enrollment_date TIMESTAMP NOT NULL DEFAULT "2022-07-01 00:00:00" ,
+                       selected_course INT NOT NULL DEFAULT 1, 
+                       location VARCHAR(20) NOT NULL,                      
+                       student_company VARCHAR(20) NOT NULL,                        
+                       unique key(email,phone),
+                       foreign key(selected_course) REFERENCES courses(course_id));
+
+
+
+# in this courses table is parent table as if it does not have a value then students table cannot be created as it is having foreign CONSTRAINT
+#with it 
+
+INSERT INTO students(first_name,last_name,email,phone,selected_course,location,student_company) VALUES("devansh","gupta","d@12.com","9876",1,"Bangalore","Meta");
+
+INSERT INTO students(first_name,last_name,email,phone,selected_course,location,student_company) VALUES("devansh1","gupta","da@12.com","98726",1,"Bangalore","AI");
+INSERT INTO students(first_name,last_name,email,phone,selected_course,location,student_company) VALUES("devansh2","gupta","db@12.com","98376",2,"Meerut","FB");
+INSERT INTO students(first_name,last_name,email,phone,selected_course,location,student_company) VALUES("devansh3","gupta","dc@12.com","98756",1,"NCR","Goggle");
+INSERT INTO students(first_name,last_name,email,phone,selected_course,location,student_company) VALUES("devansh4","gupta","dd@12.com","98766",2,"ncr","Meta");
+
+select * from students; 
+
+SELECT * FROM students ORDER BY selected_course;
+SELECT DISTINCT location FROM students;
+
+SELECT first_name FROM students WHERE first_name LIKE "%2";
+
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SELECT first_name,COUNT(*) FROM students GROUP BY enrollment_date;
+
+==============================================================================================================================
+==============================================================================================================================
+
+# CASE in SQL .
+#if you want to add new coloumn as company_type whether student_company is facebook or not
+
+Select first_name,phone,email ,
+  CASE  WHEN student_company="Meta" THEN "FROM FACEBOOK"
+  ELSE "NOT FROM FACEBOOK"
+  END as company_type
+  FROM students;
+
+INNER JOIN
+
+
+SELECT students.first_name,students.phone,courses.name FROM students JOIN courses ON students.selected_course = courses.course_id;
+
+SELECT students.first_name,students.phone,courses.name FROM students JOIN courses ON students.selected_course = courses.course_id;
+
+
+
+===================================================================================================================================================
+===================================================================================================================================================
+
+With group you can't use non aggregated coloumn means you can't write below line-->
+
+Select first_name, last_name, location, avg(salary) from students GROUP BY location;
+
+As you wan't average salary from each location but you simply can't write this way as first_name , last_name are
+not used in group by so they are termed as non aggregated columns.
+
+===================================================================================================================================================
+===================================================================================================================================================
+
+how to know the name of students having highest salary who joined in compant , simply do
+
+select f_name, last_name , salary, row_number() over (order by salary desc) as rownum from students;
+
+want to know 5th highest salary
+
+select * from (select f_name, last_name , salary, row_number() over (order by salary desc) as rownum from students) temptable where row_number=5 ;
+
+===================================================================================================================================================
+===================================================================================================================================================
+
+
+but if you want to know location wise descending order of salary
+
+select f_name, last_name,location , salary, row_number() over (partition by location order by salary desc) as rownum from students;
+But what rownumber does it will assign 1, 2, 3 to salary like 1000, 500, 500 but 500, 500 salary should get rank 2 only but row number asssign 
+1, 2 and 3 fashion so for that case Dense_Rank comes into picture.
+
+====================================================================================================================================================
+====================================================================================================================================================
+
+
+rank and dense rank
+
+create database oneneuron;
+use oneneuron;
+
+CREATE TABLE employee( f_name VARCHAR(30) NOT NULL, l_name VARCHAR(20) NOT NULL, salary INT NOT NULL, location VARCHAR(30) NOT NULL );
+
+INSERT INTO employee VALUES("dev","gupta",1000,"meerut"),("gauti","chacha",800,"tempo"),("ulhaq","seempi",200,"afg"),("beti","call",900,"meerut");
+
+Select * from employee;
+
+INSERT INTO employee VALUES("devdd","gupta",10000,"meerut"),("gaudti","chacha",800,"tempo"),("ulhdaq","seempi",2000,"afg"),("beeti","call",900,"meerut");
+
+##to get row number according to salary 
+select f_name ,l_name,salary, ROW_NUMBER() over (order by salary desc) as rownum from employee;
+
+#to get the name of person having 5th highest salary
+select * from(select f_name ,l_name,salary, ROW_NUMBER() over (order by salary desc) as rownum from employee) temptable where rownum=5;
+
+
+#partition BY
+select f_name ,l_name,salary,location, ROW_NUMBER() over (partition by location order by salary desc) as rownum from employee;
+##rank and dense_rank
+select f_name ,l_name,salary, RANK() over (order by salary desc) as rownum from employee;
+#if both person has same salry it will assign equal row number to them but after that it starts from by skipping one NUMBER
+
+select f_name ,l_name,salary, DENSE_RANK() over (order by salary desc) as rownum from employee;
+
+
+
+
+
+
+
+
+
+
