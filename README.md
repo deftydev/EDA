@@ -11,3 +11,4 @@ Note- if with join you don't do l1.num means does not specify to which column l1
 select distinct l1.num as ConsecutiveNums from Logs l1 
 JOIN Logs l2 ON l2.id=(l1.id)+1 and l2.num=l1.num
 JOIN Logs l3 ON l3.id=(l1.id)+2 and l3.num=l1.num;
+
