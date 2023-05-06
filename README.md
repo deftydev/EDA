@@ -12,3 +12,10 @@ select distinct l1.num as ConsecutiveNums from Logs l1
 JOIN Logs l2 ON l2.id=(l1.id)+1 and l2.num=l1.num
 JOIN Logs l3 ON l3.id=(l1.id)+2 and l3.num=l1.num;
 
+
+Customers who never order
+Note- is null is important don't write equals to with null-->
+
+select Customers.name as Customers FROM Customers 
+LEFT JOIN Orders ON Customers.id=Orders.customerId WHERE Orders.customerId is NULL;
+
