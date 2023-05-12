@@ -1,5 +1,13 @@
 # EDA
 
+Regression
+reg.score(X_train,y_train)
+
+reg.score(X_test,y_test)
+
+Classification
+accuracy_score(y_test, y_pred)
+
 SQL LEETCODE
 
 
