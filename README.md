@@ -9,7 +9,8 @@ or testing accuracy can be calculated using
 y_pred = reg.predict(X_test) ,
 accuracy_score(y_test,X_test)
 
-dieefrence between score and accuracy score
+difference between score and accuracy score
+
 accuracy_score() function: This function is part of the metrics module in scikit-learn and is used to calculate the accuracy of the model's predictions given the true labels. It can be used when you want to manually compare the predicted labels with the true labels for any set of data, not just the test set. It is a general-purpose function that can be used with any predicted labels and true labels, regardless of the model used.
 
 score() method: The score() method is specific to scikit-learn models and is usually used for evaluating the model's performance on the test set. It internally makes predictions on the input data and compares them with the true labels, returning the accuracy. It is a more concise way to obtain the accuracy for the test set specifically, without manually comparing labels.
