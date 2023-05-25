@@ -6,7 +6,7 @@ training_accuracy = reg.score(X_train,y_train)
 testing_accuracy = reg.score(X_test,y_test)
 or testing accuracy can be calculated using
 
-y_pred = reg.predict(X_test)
+y_pred = reg.predict(X_test) ,
 accuracy_score(y_test,X_test)
 
 dieefrence between score and accuracy score
