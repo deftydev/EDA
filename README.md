@@ -17,7 +17,11 @@ score() method: The score() method is specific to scikit-learn models and is usu
 Classification
 accuracy_score(y_test, y_pred)
 
+
+To control overfitting decision tree-: control max_depth and min_samples_split , max depth should be low and minimum sample to be at leaf note (min_sample_split) should be high.
+
 SQL LEETCODE
+
 
 
 SELECT NULLIF ((SELECT DISTINCT salary FROM (SELECT salary, DENSE_RANK() over(ORDER BY salary DESC) AS rownum  FROM employee) temp WHERE temp.rownum=2) , NULL) AS SecondHighestSalary ;
