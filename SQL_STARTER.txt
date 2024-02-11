@@ -71,7 +71,7 @@ CREATE TABLE students (id INT PRIMARY KEY AUTO_INCREMENT, first_name VARCHAR(20)
 
 
 
-# in this courses table is parent table as if it does not have a value then students table cannot be created as it is having foreign CONSTRAINT
+# in this courses table is parent table as if it does not have a value (means if course_id 3 i not present in courses then if from students table anyone want to enroll into course_id 3 that will not be possible) then students table cannot be created as it is having foreign CONSTRAINT
 #with it 
 
 INSERT INTO students(first_name,last_name,email,phone,selected_course) VALUES("devansh","gupta","d@12.com","9876",1);
@@ -194,19 +194,24 @@ INSERT INTO employee VALUES("devdd","gupta",10000,"meerut"),("gaudti","chacha",8
 ##to get row number according to salary 
 select f_name ,l_name,salary, ROW_NUMBER() over (order by salary desc) as rownum from employee;
 
-#to get the name of person having 5th highest salary
+important where should be used #to get the name of person having 5th highest salary
 select * from(select f_name ,l_name,salary, ROW_NUMBER() over (order by salary desc) as rownum from employee) temptable where rownum=5;
 
 
 #partition BY
 select f_name ,l_name,salary,location, ROW_NUMBER() over (partition by location order by salary desc) as rownum from employee;
+like if there are two people with 10000 salary it will assign them 1,2 and if another has 8000 it will assign it as 3
+
 ##rank and dense_rank
 select f_name ,l_name,salary, RANK() over (order by salary desc) as rownum from employee;
-#if both person has same salry it will assign equal row number to them but after that it starts from by skipping one NUMBER
+#if both person has same salary it will assign equal row number to them but after that it starts from by skipping one NUMBER
+
+like if there are two people with 10000 salary it will assign them 1,1 and if another has 8000 it will assign it as 3 
+
 
 select f_name ,l_name,salary, DENSE_RANK() over (order by salary desc) as rownum from employee;
 
-
+like if there are two people with 10000 salary it will assign them 1,1 and if another has 8000 it will assign it as 2 
 
 
 
